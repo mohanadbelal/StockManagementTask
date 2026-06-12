@@ -1,0 +1,255 @@
+Tables Creation:
+
+--------Material Table : 
+
+CREATE TABLE [dbo].[Material](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[Color] [nvarchar](50) NOT NULL,
+	[CurrentStock] [int] NOT NULL,
+	[MinimumRequiredStock] [int] NOT NULL,
+	[CreatedAt] [datetime] NOT NULL,
+	[UpdatedAt] [datetime] NULL,
+ CONSTRAINT [PK_Material] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Material] ADD  CONSTRAINT [DF_Material_CreatedAt]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+
+ALTER TABLE [dbo].[Material] ADD  CONSTRAINT [DF_Material_UpdatedAt]  DEFAULT (getdate()) FOR [UpdatedAt]
+GO
+
+
+
+
+--------User Table :
+
+CREATE TABLE [dbo].[User](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Username] [nvarchar](50) NOT NULL,
+	[PasswordHash] [varbinary](max) NOT NULL,
+	[Role] [varchar](50) NOT NULL,
+	[CreatedAt] [datetime] NULL,
+ CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[User] ADD  CONSTRAINT [DF_User_CreatedAt]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+
+
+--------Stock Tranasction Table:
+
+
+
+CREATE TABLE [dbo].[StockTransaction](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[MaterialId] [int] NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[TransactionType] [bit] NOT NULL,
+	[TransactionDate] [datetime] NOT NULL,
+ CONSTRAINT [PK_StockTransaction] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[StockTransaction] ADD  CONSTRAINT [DF_StockTransaction_TransactionDate]  DEFAULT (getdate()) FOR [TransactionDate]
+GO
+
+ALTER TABLE [dbo].[StockTransaction]  WITH CHECK ADD  CONSTRAINT [FK_StockTransaction_Material] FOREIGN KEY([MaterialId])
+REFERENCES [dbo].[Material] ([Id])
+GO
+
+ALTER TABLE [dbo].[StockTransaction] CHECK CONSTRAINT [FK_StockTransaction_Material]
+GO
+
+
+
+
+
+
+
+
+
+-------------------------- STORED PROCEDURES-----------------------
+
+------- Material Procedure:
+
+--DELETE : 
+
+CREATE PROCEDURE [dbo].[sp_Material_Delete]
+	-- Add the parameters for the stored procedure here
+	@Id int 
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	delete from dbo.StockTransaction where MaterialId = @Id
+
+
+    delete from dbo.Material where Id = @Id
+END
+GO
+
+
+--UPSERT:
+
+CREATE PROCEDURE [dbo].[sp_Material_Upsert]
+    @Name NVARCHAR(100),
+    @Color NVARCHAR(50),
+    @CurrentStock INT,
+    @MinimumRequiredStock INT,
+    @inMaterialId INT = null
+AS
+BEGIN
+     If ( @inMaterialId is null or @inMaterialId = 0)
+         BEGIN 
+                
+            INSERT INTO [dbo].[Material]
+           ([Name]
+           ,[Color]
+           ,[CurrentStock]
+           ,[MinimumRequiredStock])
+             VALUES
+           (@Name
+           ,@Color
+           ,@CurrentStock
+           ,@MinimumRequiredStock
+           )
+         END
+
+      else
+         BEGIN
+
+            UPDATE dbo.Material 
+            set Name = @Name , Color = @Color , CurrentStock = @CurrentStock , MinimumRequiredStock = @MinimumRequiredStock
+              ,UpdatedAt = getdate()
+            where Id = @inMaterialId
+
+
+
+         END
+END
+GO
+
+
+------- Stock Transactions Procedure:
+
+--Delete:
+CREATE PROCEDURE [dbo].[sp_StockTransaction_Delete]
+	@Id int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    DECLARE @TransactionType as bit
+	DECLARE @Quantity as int
+	DECLARE @MaterialId as int
+	select @TransactionType =  TransactionType , @Quantity = Quantity , @MaterialId = MaterialId from dbo.StockTransaction where Id = @Id
+
+	if (@TransactionType = 1 )
+		BEGIN 
+			UPDATE dbo.Material set CurrentStock = CurrentStock - @Quantity where Id = @MaterialId
+		END
+	else
+		BEGIN 
+			UPDATE dbo.Material set CurrentStock = CurrentStock + @Quantity where Id = @MaterialId
+		END
+
+	delete from dbo.StockTransaction where Id = @Id
+
+END
+GO
+
+
+--Insert:
+
+CREATE PROCEDURE [dbo].[sp_StockTransaction_Insert]
+	@MaterialId int,
+	@Quantity int,
+	@TransactionType bit
+
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+
+         BEGIN 
+                
+            INSERT INTO [dbo].StockTransaction
+           (MaterialId
+           ,Quantity
+           ,TransactionType)
+             VALUES
+           (@MaterialId
+           ,@Quantity
+           ,@TransactionType
+           )
+
+           if (@TransactionType = 1)
+              BEGIN
+                  update dbo.Material set CurrentStock = CurrentStock + @Quantity
+                  where Id = @MaterialId
+              END
+           else
+              BEGIN
+                  update dbo.Material set CurrentStock = CurrentStock - @Quantity
+                  where Id = @MaterialId
+              END
+         END
+
+
+END
+GO
+
+
+
+------------------User Procedures
+
+--Create:
+
+CREATE   PROCEDURE [dbo].[sp_User_Create]
+	@Username as nvarchar(50),
+	@PasswordHash as varbinary(MAX),
+	@Role as nvarchar(50)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	IF NOT EXISTS ( Select * from  [StockManagementDb].[dbo].[User] where Username = @Username)
+		BEGIN
+            INSERT INTO [StockManagementDb].[dbo].[User](
+                Username,
+                [PasswordHash],
+                Role
+            ) VALUES (
+                @Username,
+                @PasswordHash,
+                @Role
+            )
+        END
+END
+GO
+
+
+
+
+
+
+
+
