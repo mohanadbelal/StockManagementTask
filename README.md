@@ -13,3 +13,10 @@ Table creation scripts are included in the project to set up the necessary datab
 
 
 Also includes Logging for Error and Information messages to help with debugging and monitoring the application.
+
+
+Notes:
+- Ensure to update the connection string in `appsettings.json` with your actual database connection details.
+- Replace the `TokenKey` and `PasswordKey` with secure keys in a production environment
+- Make sure to run the SQL scripts provided in the project to create the necessary tables before running the application.
+- Usage of Secrets Manager or Azure key vault or Enviroment Variables is recommended for storing sensitive information like connection strings and keys in a production environment.
