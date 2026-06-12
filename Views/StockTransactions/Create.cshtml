@@ -1,0 +1,49 @@
+@{
+    ViewData["Title"] = "New Stock Transaction";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>Record Stock Transaction</h2>
+            <hr />
+            
+            <form method="post" asp-action="Create" asp-controller="StockTransactions">
+                @Html.AntiForgeryToken()
+                
+                <div class="mb-3">
+                    <label for="materialId" class="form-label">Select Material</label>
+                    <select class="form-control" id="materialId" name="materialId" required>
+                        <option value="">-- Select Material --</option>
+                        <!-- TODO: Populate with materials -->
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="transactionType" class="form-label">Transaction Type</label>
+                    <select class="form-control" id="transactionType" name="transactionType" required>
+                        <option value="">-- Select Type --</option>
+                        <option value="IN">Stock In</option>
+                        <option value="OUT">Stock Out</option>
+                        <option value="ADJUSTMENT">Adjustment</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Quantity</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" step="0.01" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="remarks" class="form-label">Remarks</label>
+                    <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Record Transaction</button>
+                    <a asp-action="Index" asp-controller="StockTransactions" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

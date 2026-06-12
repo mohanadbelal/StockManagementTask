@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Stock Transactions";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <h2>Stock Transactions</h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Create" asp-controller="StockTransactions" class="btn btn-success">New Transaction</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Material</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Date</th>
+                    <th>Remarks</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- TODO: Populate with transaction data -->
+                <tr>
+                    <td colspan="7" class="text-center text-muted">No transactions found</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid mt-4">
+    <h2>Dashboard</h2>
+    <hr />
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Materials</h5>
+                    <h2>0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Stock In Transactions</h5>
+                    <h2>0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Stock Out Transactions</h5>
+                    <h2>0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Low Stock Items</h5>
+                    <h2>0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Transactions</h5>
+                </div>
+                <div class="card-body">
+                    <!-- TODO: Display recent transactions -->
+                    <p class="text-muted">No recent transactions</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Quick Links</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a asp-action="Index" asp-controller="Materials">View Materials</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a asp-action="Create" asp-controller="Materials">Add New Material</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a asp-action="Create" asp-controller="StockTransactions">Record Transaction</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a asp-action="History" asp-controller="StockTransactions">View History</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
