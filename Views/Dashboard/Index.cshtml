@@ -1,3 +1,5 @@
+@model DashboardViewModel
+
 @{
     ViewData["Title"] = "Dashboard";
 }
@@ -11,7 +13,7 @@
             <div class="card bg-primary text-white">
                 <div class="card-body">
                     <h5 class="card-title">Total Materials</h5>
-                    <h2>0</h2>
+                    <h2>@Model.TotalMaterial</h2>
                 </div>
             </div>
         </div>
@@ -19,7 +21,7 @@
             <div class="card bg-success text-white">
                 <div class="card-body">
                     <h5 class="card-title">Stock In Transactions</h5>
-                    <h2>0</h2>
+                    <h2>@Model.StockIn</h2>
                 </div>
             </div>
         </div>
@@ -27,7 +29,7 @@
             <div class="card bg-warning text-white">
                 <div class="card-body">
                     <h5 class="card-title">Stock Out Transactions</h5>
-                    <h2>0</h2>
+                    <h2>@Model.StockOut</h2>
                 </div>
             </div>
         </div>
@@ -35,24 +37,13 @@
             <div class="card bg-danger text-white">
                 <div class="card-body">
                     <h5 class="card-title">Low Stock Items</h5>
-                    <h2>0</h2>
+                    <h2>@Model.LowStockItem</h2>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Recent Transactions</h5>
-                </div>
-                <div class="card-body">
-
-                    <p class="text-muted">No recent transactions</p>
-                </div>
-            </div>
-        </div>
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
@@ -66,7 +57,7 @@
                         <li class="list-group-item">
                             <a asp-action="Index" asp-controller="StockTransactions">View Transactions</a>
                         </li>
-                        @if (User.IsInRole("Admin"))
+                        @if (User.IsInRole("Normal"))
                         {
                             <li class="list-group-item">
                                 <a asp-action="Create" asp-controller="Materials">Add New Material</a>

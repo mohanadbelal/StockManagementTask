@@ -1,3 +1,4 @@
+@model List<Assignment.Task.Models.StockTransaction>
 @{
     ViewData["Title"] = "Stock Transactions";
 }
@@ -8,7 +9,7 @@
             <h2>Stock Transactions</h2>
         </div>
         <div class="col-md-4 text-end">
-            @if(User.IsInRole("Admin")){
+            @if(User.IsInRole("Normal")){
                 <a asp-action="Create" asp-controller="StockTransactions" class="btn btn-success">New Transaction</a>
             }
             
@@ -24,15 +25,36 @@
                     <th>Type</th>
                     <th>Quantity</th>
                     <th>Date</th>
-                    <th>Remarks</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- TODO: Populate with transaction data -->
-                <tr>
-                    <td colspan="7" class="text-center text-muted">No transactions found</td>
-                </tr>
+                @if (Model != null && Model.Count > 0)
+                {
+                    @foreach (var stockTrans in Model)
+                    {
+                        <tr >
+                            <td>@stockTrans.Id</td>
+                            <td>@stockTrans.MaterialId</td>
+                            <td>@(stockTrans.TransactionType == 1 ? "In" : "Out")</td>
+                            <td>@stockTrans.Quantity</td>
+                            <td>@stockTrans.TransactionDate.ToString("MM/dd/yyyy hh:mm:ss")</td>
+                            @if (User.IsInRole("Normal"))
+                            {
+                                <td>
+                                     <a asp-action="Delete" asp-controller="StockTransactions" asp-route-id="@stockTrans.Id" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                                </td>
+                            }
+
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">No Transactions found</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

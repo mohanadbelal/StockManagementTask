@@ -68,7 +68,12 @@ namespace Assignment.Task.Helpers
             return _dapper.ExecuteQueryWithParameter(sql, sqlParams);
         }
 
-
+		public int GetLowStockMaterials()
+		{
+			string sql = "SELECT * FROM dbo.Material where [CurrentStock] <= [MinimumRequiredStock]";
+			List<Material> materials = _dapper.LoadData<Material>(sql).ToList();
+			return materials.Count;
+		}
 
     }
 }

@@ -1,3 +1,4 @@
+@model List<Assignment.Task.Models.Material>
 @{
     ViewData["Title"] = "New Stock Transaction";
 }
@@ -15,13 +16,16 @@
                     <label for="materialId" class="form-label">Select Material</label>
                     <select class="form-control" id="materialId" name="materialId" required>
                         <option value="">-- Select Material --</option>
-                        <!-- TODO: Populate with materials -->
+                        @foreach (var material in Model)
+                        {
+                            <option value="@material.Id">@material.Name</option>                          
+                        }
                     </select>
                 </div>
 
                 <div class="mb-3">
-                    <label for="transactionType" class="form-label">Transaction Type</label>
-                    <select class="form-control" id="transactionType" name="transactionType" required>
+                    <label for="TransactionType" class="form-label">Transaction Type</label>
+                    <select class="form-control" id="TransactionType" name="TransactionType" required>
                         <option value="">-- Select Type --</option>
                         <option value="1">Stock In</option>
                         <option value="0">Stock Out</option>
@@ -29,13 +33,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="quantity" class="form-label">Quantity</label>
-                    <input type="number" class="form-control" id="quantity" name="quantity" step="0.01" required />
-                </div>
-
-                <div class="mb-3">
-                    <label for="remarks" class="form-label">Remarks</label>
-                    <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
+                    <label for="Quantity" class="form-label">Quantity</label>
+                    <input type="number" class="form-control" id="Quantity" name="Quantity" step="0.01" required />
                 </div>
 
                 <div class="form-group">

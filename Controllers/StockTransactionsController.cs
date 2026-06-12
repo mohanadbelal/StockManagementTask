@@ -1,38 +1,46 @@
+using Assignment.Task.Helpers;
+using Assignment.Task.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Task.Controllers
 {
     public class StockTransactionsController : Controller
     {
+        private readonly StockManagementHelper _stkManagementHelper;
+
+        private readonly MaterialHelper _materialHelper;
+
+        public StockTransactionsController(IConfiguration iConfig)
+        {
+			_stkManagementHelper = new StockManagementHelper(iConfig);
+            _materialHelper = new MaterialHelper(iConfig);
+        }
         public IActionResult Index()
         {
-            // TODO: Fetch stock transactions from database
-            return View();
+
+            List<StockTransaction> stockTransactions = _stkManagementHelper.GetPreviousTransactions(Top:false);
+
+            return View(stockTransactions);
         }
 
         public IActionResult Create()
         {
-            return View();
+            List<Material> materials = _materialHelper.GetMaterials();
+            return View(materials);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(object model)
+        public IActionResult Create(StockTransaction model)
         {
-            // TODO: Implement stock transaction creation logic
-            return RedirectToAction(nameof(Index));
-        }
 
-        public IActionResult Details(int id)
-        {
-            // TODO: Fetch and display transaction details
-            return View();
+            _stkManagementHelper.InsertStockTranasction(model);
+			return RedirectToAction(nameof(Index));
         }
-
-        public IActionResult History()
+        public IActionResult Delete(int Id)
         {
-            // TODO: Display transaction history
-            return View();
-        }
+			_stkManagementHelper.DeleteStockTransaction(Id);
+			return RedirectToAction(nameof(Index));
+		}
     }
 }

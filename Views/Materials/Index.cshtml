@@ -10,7 +10,7 @@
             <h2>Materials</h2>
         </div>
         <div class="col-md-4 text-end">
-            @if (User.IsInRole("Admin")){
+            @if (User.IsInRole("Normal")){
                 <a asp-action="Create" asp-controller="Materials" class="btn btn-success">Add New Material</a>
             }
             
@@ -42,7 +42,7 @@
                             <td>@material.CurrentStock</td>
                             <td>@material.MinimumRequiredStock</td>
                             <td>@material.CreatedAt.ToString("MM/dd/yyyy")</td>
-                            @if(User.IsInRole("Admin")){
+                            @if(User.IsInRole("Normal")){
                                 <td>
                                     <a asp-action="Edit" asp-controller="Materials" asp-route-id="@material.Id" class="btn btn-sm btn-primary">Edit</a>
                                     <a asp-action="Delete" asp-controller="Materials" asp-route-id="@material.Id" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>

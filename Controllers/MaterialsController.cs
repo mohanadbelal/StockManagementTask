@@ -22,7 +22,7 @@ namespace Assignment.Task.Controllers
             return View(materials);
         }
 
-        [Authorize(Roles = ("Admin"))]
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -38,7 +38,7 @@ namespace Assignment.Task.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [Authorize(Roles = ("Admin"))]
+        [Authorize]
         public IActionResult Edit(int id)
         {
             Material? material = _materialHelper.GetMaterialById(id);
@@ -57,7 +57,7 @@ namespace Assignment.Task.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [Authorize(Roles = ("Admin"))]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             _materialHelper.DeleteMaterial(id);
