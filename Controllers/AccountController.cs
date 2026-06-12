@@ -14,7 +14,6 @@ namespace Assignment.Task.Controllers
 
         private readonly AuthHelpers _authHelpers;
 
-        private readonly SqlHelper _sqlHelper;
 
         public AccountController(IConfiguration iConfig)
         {
@@ -22,13 +21,15 @@ namespace Assignment.Task.Controllers
 
             _authHelpers = new AuthHelpers(iConfig);
 
-            _sqlHelper = new SqlHelper(iConfig);
         }
 
 
 
         public IActionResult Login()
         {
+            
+            Response.Cookies.Delete("JwtToken");
+            
             return View();
         }
 
@@ -40,7 +41,7 @@ namespace Assignment.Task.Controllers
 
             User currUser;
 
-            if(_sqlHelper.LoginUser(username, PasswordHash , out currUser ))
+            if(_authHelpers.LoginUser(username, PasswordHash , out currUser ))
             {
                 string JwtToken = _authHelpers.CreateToken(currUser.Id, currUser.Role);
 
@@ -105,7 +106,7 @@ namespace Assignment.Task.Controllers
                     Role = "Normal"
                 };
 
-                if (_sqlHelper.RegisterUser(newUser))
+                if (_authHelpers.RegisterUser(newUser))
                 {
                     return RedirectToAction(nameof(Login));
                 }

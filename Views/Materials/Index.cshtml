@@ -1,3 +1,5 @@
+@model List<Assignment.Task.Models.Material>
+
 @{
     ViewData["Title"] = "Materials Listing";
 }
@@ -8,7 +10,10 @@
             <h2>Materials</h2>
         </div>
         <div class="col-md-4 text-end">
-            <a asp-action="Create" asp-controller="Materials" class="btn btn-success">Add New Material</a>
+            @if (User.IsInRole("Admin")){
+                <a asp-action="Create" asp-controller="Materials" class="btn btn-success">Add New Material</a>
+            }
+            
         </div>
     </div>
 
@@ -18,18 +23,43 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Description</th>
+                    <th>Color</th>
                     <th>Current Stock</th>
-                    <th>Unit</th>
+                    <th>Minimum Required Stock</th>
+                    <th>Created Date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- TODO: Populate with materials data -->
-                <tr>
-                    <td colspan="6" class="text-center text-muted">No materials found</td>
-                </tr>
+                @if (Model != null && Model.Count > 0)
+                {
+                    @foreach (var material in Model)
+                    {
+                        <tr class="@(material.CurrentStock <= material.MinimumRequiredStock ? "table-danger" : "")">
+                            <td>@material.Id</td>
+                            <td>@material.Name</td>
+                            <td>@material.Color</td>
+                            <td>@material.CurrentStock</td>
+                            <td>@material.MinimumRequiredStock</td>
+                            <td>@material.CreatedAt.ToString("MM/dd/yyyy")</td>
+                            @if(User.IsInRole("Admin")){
+                                <td>
+                                    <a asp-action="Edit" asp-controller="Materials" asp-route-id="@material.Id" class="btn btn-sm btn-primary">Edit</a>
+                                    <a asp-action="Delete" asp-controller="Materials" asp-route-id="@material.Id" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                                </td>
+                            }
+                            
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">No materials found</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
 </div>
+

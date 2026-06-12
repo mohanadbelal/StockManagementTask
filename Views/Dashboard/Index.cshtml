@@ -48,7 +48,7 @@
                     <h5>Recent Transactions</h5>
                 </div>
                 <div class="card-body">
-                    <!-- TODO: Display recent transactions -->
+
                     <p class="text-muted">No recent transactions</p>
                 </div>
             </div>
@@ -64,14 +64,20 @@
                             <a asp-action="Index" asp-controller="Materials">View Materials</a>
                         </li>
                         <li class="list-group-item">
-                            <a asp-action="Create" asp-controller="Materials">Add New Material</a>
+                            <a asp-action="Index" asp-controller="StockTransactions">View Transactions</a>
                         </li>
-                        <li class="list-group-item">
-                            <a asp-action="Create" asp-controller="StockTransactions">Record Transaction</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a asp-action="History" asp-controller="StockTransactions">View History</a>
-                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="list-group-item">
+                                <a asp-action="Create" asp-controller="Materials">Add New Material</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a asp-action="Create" asp-controller="StockTransactions">Add New Stock Transaction</a>
+                            </li>
+                        }
+                        
+                        
+                        
                     </ul>
                 </div>
             </div>

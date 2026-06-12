@@ -1,9 +1,10 @@
-﻿using Dapper;
+﻿using Assignment.Task.Data;
+using Assignment.Task.Dtos;
+using Assignment.Task.Models;
+using Dapper;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
-using Assignment.Task.Data;
-using Assignment.Task.Dtos;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -74,5 +75,49 @@ namespace Assignment.Task.Helpers
 
 		}
 
-	}
+
+        public bool RegisterUser(User user)
+        {
+            string sql = @"
+			EXEC [dbo].sp_User_Create
+				    @Username = @UsernameParam " +
+                "  ,@PasswordHash =  @PasswordHashParam" +
+                "  ,@Role =     @RoleParam ";
+
+            DynamicParameters sqlParams = new DynamicParameters();
+            sqlParams.Add("@UsernameParam", user.Username, DbType.String);
+            sqlParams.Add("@PasswordHashParam", user.PasswordHash, DbType.Binary);
+            sqlParams.Add("@RoleParam", user.Role, DbType.String);
+
+            return _dapper.ExecuteQueryWithParameter(sql, sqlParams);
+        }
+
+        public bool LoginUser(string username, byte[] PasswordHash, out User user)
+        {
+            string sql = "select * from [StockManagementDb].[dbo].[User] where Username = @UsernameParam and PasswordHash = @PasswordHashParam";
+            DynamicParameters sqlParams = new DynamicParameters();
+            sqlParams.Add("@UsernameParam", username, DbType.String);
+            sqlParams.Add("@PasswordHashParam", PasswordHash, DbType.Binary);
+
+            User currUser = _dapper.LoadDataSingleWithParams<User>(sql, sqlParams);
+
+            user = null;
+
+            if (currUser == null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < PasswordHash.Length; i++)
+            {
+                if (PasswordHash[i] != currUser.PasswordHash[i])
+                    return false;
+            }
+
+            user = currUser;
+            return true;
+
+        }
+
+    }
 }

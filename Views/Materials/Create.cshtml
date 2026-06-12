@@ -7,28 +7,28 @@
         <div class="col-md-8 offset-md-2">
             <h2>Add New Material</h2>
             <hr />
-            
+
             <form method="post" asp-action="Create" asp-controller="Materials">
                 @Html.AntiForgeryToken()
-                
+
                 <div class="mb-3">
                     <label for="name" class="form-label">Material Name</label>
                     <input type="text" class="form-control" id="name" name="name" required />
                 </div>
 
                 <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    <label for="color" class="form-label">Color</label>
+                    <input type="text" class="form-control" id="color" name="color" required />
                 </div>
 
                 <div class="mb-3">
-                    <label for="unit" class="form-label">Unit of Measurement</label>
-                    <input type="text" class="form-control" id="unit" name="unit" placeholder="e.g., kg, liters, pieces" />
+                    <label for="currentStock" class="form-label">Current Stock</label>
+                    <input type="number" class="form-control" id="currentStock" name="currentStock" min="0" required />
                 </div>
 
                 <div class="mb-3">
-                    <label for="reorderLevel" class="form-label">Reorder Level</label>
-                    <input type="number" class="form-control" id="reorderLevel" name="reorderLevel" />
+                    <label for="minimumRequiredStock" class="form-label">Minimum Required Stock</label>
+                    <input type="number" class="form-control" id="minimumRequiredStock" name="minimumRequiredStock" min="0" required />
                 </div>
 
                 <div class="form-group">

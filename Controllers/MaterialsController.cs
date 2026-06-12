@@ -1,60 +1,68 @@
+using Assignment.Task.Helpers;
+using Assignment.Task.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Task.Controllers
 {
     public class MaterialsController : Controller
     {
-        public IActionResult Index()
+
+        private readonly MaterialHelper _materialHelper;
+
+        public MaterialsController(IConfiguration iConfig)
         {
-            // TODO: Fetch materials list from database
-            return View();
+            _materialHelper = new MaterialHelper(iConfig);
         }
 
+
+        public IActionResult Index()
+        {
+            List<Material> materials = _materialHelper.GetMaterials();
+            return View(materials);
+        }
+
+        [Authorize(Roles = ("Admin"))]
         public IActionResult Create()
         {
             return View();
         }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(object model)
+        public IActionResult Create(Material model)
         {
-            // TODO: Implement create logic
+            _materialHelper.Upsert(model);
+
+
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = ("Admin"))]
         public IActionResult Edit(int id)
         {
-            // TODO: Fetch material by id and display in view
-            return View();
+            Material? material = _materialHelper.GetMaterialById(id);
+            if (material == null)
+            {
+                return NotFound();
+            }
+            return View(material);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, object model)
+        public IActionResult Edit(Material model)
         {
-            // TODO: Implement edit logic
+            _materialHelper.Upsert(model);
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = ("Admin"))]
         public IActionResult Delete(int id)
         {
-            // TODO: Fetch material by id for confirmation
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            // TODO: Implement delete logic
+            _materialHelper.DeleteMaterial(id);
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Details(int id)
-        {
-            // TODO: Fetch and display material details
-            return View();
-        }
     }
 }

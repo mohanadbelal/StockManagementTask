@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Task.Controllers
 {
-    [Authorize(Roles = "Admin") ]
+    [Authorize]
     public class DashboardController : Controller
     {
         public IActionResult Index()

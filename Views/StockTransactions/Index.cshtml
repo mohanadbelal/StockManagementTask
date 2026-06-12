@@ -8,7 +8,10 @@
             <h2>Stock Transactions</h2>
         </div>
         <div class="col-md-4 text-end">
-            <a asp-action="Create" asp-controller="StockTransactions" class="btn btn-success">New Transaction</a>
+            @if(User.IsInRole("Admin")){
+                <a asp-action="Create" asp-controller="StockTransactions" class="btn btn-success">New Transaction</a>
+            }
+            
         </div>
     </div>
 

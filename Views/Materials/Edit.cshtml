@@ -1,0 +1,45 @@
+@model Assignment.Task.Models.Material
+
+@{
+    ViewData["Title"] = "Edit Material";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>Edit Material</h2>
+            <hr />
+
+            <form method="post" asp-action="Edit" asp-controller="Materials">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="Id" value="@Model.Id" />
+
+                <div class="mb-3">
+                    <label for="MaterialName" class="form-label">Material Name</label>
+                    <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="MaterialColor" class="form-label">Color</label>
+                    <input type="text" class="form-control" id="Color" name="Color" value="@Model.Color" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="CurrentStock" class="form-label">Current Stock</label>
+                    <input type="number" class="form-control" id="CurrentStock" name="CurrentStock" value="@Model.CurrentStock" min="0" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="MinimumRequiredStock" class="form-label">Minimum Required Stock</label>
+                    <input type="number" class="form-control" id="MinimumRequiredStock" name="MinimumRequiredStock" value="@Model.MinimumRequiredStock" min="0" required />
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a asp-action="Index" asp-controller="Materials" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
