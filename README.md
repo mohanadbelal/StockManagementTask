@@ -25,7 +25,7 @@ Notes:
 
 Assumptions:
 - I've assumed that a normal user can Login,Create Material and Tranasction as well as editing or deleting them, which isn't right but will be changed based on the business needs.
-- I've also added highlighted the Materials that are close to the minimum threshold with a different color to grab the attention of the user.
+- I've also highlighted the Materials that are close to the minimum threshold with a different color to grab the attention of the user.
 
 Packages Used:
 -Nlog
