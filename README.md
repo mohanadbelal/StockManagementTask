@@ -23,6 +23,10 @@ Notes:
 - Logs is being created in Logs Folder in the project directory, ensure that the application has write permissions to this folder.
 
 
+Assumptions:
+- I've assumed that a normal user can Login,Create Material and Tranasction as well as editing or deleting them, which isn't right but will be changed based on the business needs.
+- I've also added highlighted the Materials that are close to the minimum threshold with a different color to grab the attention of the user.
+
 Packages Used:
 -Nlog
 -Microsoft.AspNetCore.Authentication.JwtBearer
