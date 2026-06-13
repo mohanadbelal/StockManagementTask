@@ -3,16 +3,17 @@ using Assignment.Task.Models;
 using Dapper;
 using Microsoft.AspNetCore.Identity;
 using System.Data;
+using NLog;
 
 namespace Assignment.Task.Helpers
 {
 	public class MaterialHelper
 	{
 		private readonly DataContextDapper _dapper;
+		private readonly Logger _logger = LogManager.GetLogger(nameof(MaterialHelper));
 
 		public MaterialHelper(IConfiguration Config)
 		{
-			
 			_dapper = new DataContextDapper(Config);
 		}
 
@@ -20,6 +21,7 @@ namespace Assignment.Task.Helpers
 		public List<Material> GetMaterials()
 		{
 			string  sql = "SELECT * FROM dbo.Material";
+			_logger.Info("GetMaterials called");
 			List<Material> materials = _dapper.LoadData<Material>(sql).ToList();
 			return materials;
 		}
@@ -30,6 +32,7 @@ namespace Assignment.Task.Helpers
 			DynamicParameters sqlParams = new DynamicParameters();
 			sqlParams.Add("@MaterialIdParam", id, DbType.Int64);
 
+			_logger.Debug("GetMaterialById called for {0}", id);
 			Material? material = _dapper.LoadDataSingleWithParams<Material>(sql, sqlParams);
 			return material;
 		}
@@ -52,7 +55,8 @@ namespace Assignment.Task.Helpers
             sqlParams.Add("@CurrentStockParam", material.CurrentStock, DbType.String);
             sqlParams.Add("@MaterialIdParam", material.Id, DbType.Int64);
 
-            return _dapper.ExecuteQueryWithParameter(sql, sqlParams);
+			_logger.Info("Upsert material {0}", material.Name);
+			return _dapper.ExecuteQueryWithParameter(sql, sqlParams);
         }
 
 
@@ -65,12 +69,14 @@ namespace Assignment.Task.Helpers
             DynamicParameters sqlParams = new DynamicParameters();
             sqlParams.Add("@MaterialIdParam", Id, DbType.Int64);
 
-            return _dapper.ExecuteQueryWithParameter(sql, sqlParams);
+			_logger.Info("DeleteMaterial {0}", Id);
+			return _dapper.ExecuteQueryWithParameter(sql, sqlParams);
         }
 
 		public int GetLowStockMaterials()
 		{
 			string sql = "SELECT * FROM dbo.Material where [CurrentStock] <= [MinimumRequiredStock]";
+			_logger.Info("GetLowStockMaterials called");
 			List<Material> materials = _dapper.LoadData<Material>(sql).ToList();
 			return materials.Count;
 		}

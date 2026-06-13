@@ -1,6 +1,7 @@
 using Assignment.Task.Helpers;
 using Assignment.Task.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Assignment.Task.Controllers
 {
@@ -10,7 +11,9 @@ namespace Assignment.Task.Controllers
 
         private readonly MaterialHelper _materialHelper;
 
-        public StockTransactionsController(IConfiguration iConfig)
+		private readonly NLog.Logger _nlogger = NLog.LogManager.GetLogger(nameof(StockTransactionsController));
+
+		public StockTransactionsController(IConfiguration iConfig)
         {
 			_stkManagementHelper = new StockManagementHelper(iConfig);
             _materialHelper = new MaterialHelper(iConfig);
@@ -19,13 +22,15 @@ namespace Assignment.Task.Controllers
         {
 
             List<StockTransaction> stockTransactions = _stkManagementHelper.GetPreviousTransactions(Top:false);
+			_nlogger.Info("{0} StockTransactions retreived by UserId : {1}", stockTransactions.Count, User.FindFirstValue("userId"));
 
-            return View(stockTransactions);
+			return View(stockTransactions);
         }
 
         public IActionResult Create()
         {
             List<Material> materials = _materialHelper.GetMaterials();
+
             return View(materials);
         }
 
@@ -35,11 +40,16 @@ namespace Assignment.Task.Controllers
         {
 
             _stkManagementHelper.InsertStockTranasction(model);
+
+			_nlogger.Info("Stock Transction was created with the following data : {0} by UserId : {1}", model.ToString(), User.FindFirstValue("userId"));
+
 			return RedirectToAction(nameof(Index));
         }
         public IActionResult Delete(int Id)
         {
 			_stkManagementHelper.DeleteStockTransaction(Id);
+			_nlogger.Info("Stock Transction was Deleted with the following Id : {0} by UserId : {1}", Id, User.FindFirstValue("userId"));
+
 			return RedirectToAction(nameof(Index));
 		}
     }

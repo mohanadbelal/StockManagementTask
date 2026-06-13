@@ -5,6 +5,7 @@ using Assignment.Task.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.Reflection;
+using System.Security.Claims;
 
 namespace Assignment.Task.Controllers
 {
@@ -13,6 +14,8 @@ namespace Assignment.Task.Controllers
         private readonly DataContextDapper _dapper;
 
         private readonly AuthHelpers _authHelpers;
+
+        private readonly NLog.Logger _logger = NLog.LogManager.GetLogger(nameof(AccountController));
 
 
         public AccountController(IConfiguration iConfig)
@@ -41,6 +44,8 @@ namespace Assignment.Task.Controllers
 
             User currUser;
 
+            _logger.Info("Login attempt for user {0}", username);
+
             if(_authHelpers.LoginUser(username, PasswordHash , out currUser ))
             {
                 string JwtToken = _authHelpers.CreateToken(currUser.Id, currUser.Role);
@@ -58,6 +63,7 @@ namespace Assignment.Task.Controllers
             }
             else
             {
+                _logger.Warn("Invalid login attempt for user {0}", username);
                 ModelState.AddModelError(string.Empty, "Invalid Username or Password");
                 return View();
             }
@@ -65,12 +71,14 @@ namespace Assignment.Task.Controllers
 
         public IActionResult Logout()
         {
+            _logger.Info("Logging out and deleting JwtToken cookie. UserId : " + User.FindFirstValue("userId"));
             Response.Cookies.Delete("JwtToken");
             return RedirectToAction("Login");
         }
 
         public IActionResult Register()
         {
+            _logger.Info("Showing registration page.");
             return View();
         }
 
@@ -80,6 +88,7 @@ namespace Assignment.Task.Controllers
         {
             if (model.Password != model.passwordConfirm)
             {
+                _logger.Warn("Registration attempt where passwords do not match for username {0} , Password {1} , Password Confirm {2}", model.Username,model.Password,model.passwordConfirm);
                 ModelState.AddModelError(string.Empty, "Passwords do not match.");
                 return View(model);
             }
@@ -108,20 +117,23 @@ namespace Assignment.Task.Controllers
 
                 if (_authHelpers.RegisterUser(newUser))
                 {
+                    _logger.Info("User {0} registered successfully", model.Username);
                     return RedirectToAction(nameof(Login));
                 }
                 else
                 {
+                    _logger.Error("Failed to create user {0}", model.Username);
                     ModelState.AddModelError(string.Empty, "Failed to Create");
                     return View(model);
                 }
             }
             else
             {
+                _logger.Warn("Registration attempt with existing username {0}", model.Username);
                 ModelState.AddModelError(string.Empty, "Username already exist, Choose another one");
                 return View(model);
             }
-            // TODO: Implement user registration logic
+            
             
         }
     }

@@ -10,17 +10,18 @@ namespace Assignment.Task.Controllers
     {
         private readonly MaterialHelper _materialHelper;
         private readonly StockManagementHelper stockManagementHelper;
+        private readonly NLog.Logger _logger = NLog.LogManager.GetLogger(nameof(DashboardController));
 
         public DashboardController(IConfiguration IConfig)
         {
-			_materialHelper = new MaterialHelper(IConfig);
+            _materialHelper = new MaterialHelper(IConfig);
             stockManagementHelper = new StockManagementHelper(IConfig);
 
-		}
+        }
         public IActionResult Index()
         {
             DashboardViewModel dashboardViewModel = new DashboardViewModel();
-
+            _logger.Info("Loading dashboard data");
             dashboardViewModel.TotalMaterial = _materialHelper.GetMaterials().Count;
             dashboardViewModel.LowStockItem = _materialHelper.GetLowStockMaterials();
             dashboardViewModel.StockIn = stockManagementHelper.GetStockInTransactions();

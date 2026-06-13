@@ -20,3 +20,10 @@ Notes:
 - Replace the `TokenKey` and `PasswordKey` with secure keys in a production environment
 - Make sure to run the SQL scripts provided in the project to create the necessary tables before running the application.
 - Usage of Secrets Manager or Azure key vault or Enviroment Variables is recommended for storing sensitive information like connection strings and keys in a production environment.
+- Logs is being created in Logs Folder in the project directory, ensure that the application has write permissions to this folder.
+
+
+Packages Used:
+-Nlog
+-Microsoft.AspNetCore.Authentication.JwtBearer
+-dapper
