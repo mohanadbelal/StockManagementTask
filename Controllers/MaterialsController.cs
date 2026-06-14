@@ -44,11 +44,19 @@ namespace Assignment.Task.Controllers
         public IActionResult Create(Material model)
         {
 
-            _materialHelper.Upsert(model);
+            if (_materialHelper.Upsert(model))
+            {
+                _nlogger.Info("Material was created with the following data : {0} by UserId : {1}", model.ToString(), User.FindFirstValue("userId"));
 
-			_nlogger.Info("Material was created with the following data : {0} by UserId : {1}", model.ToString(), User.FindFirstValue("userId"));
+            }
+            else
+            {
+                _nlogger.Info("Failed to create Material with the following data : {0} by UserId : {1}", model.ToString(), User.FindFirstValue("userId"));
 
-			return RedirectToAction(nameof(Index));
+            }
+
+
+            return RedirectToAction(nameof(Index));
         }
 
     
@@ -68,9 +76,17 @@ namespace Assignment.Task.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Material model)
         {
-            _materialHelper.Upsert(model);
-			_nlogger.Info("Material was Edited with the following data : {0} by UserId : {1}", model.ToString(), User.FindFirstValue("userId"));
-			return RedirectToAction(nameof(Index));
+            if (_materialHelper.Upsert(model))
+            {
+                _nlogger.Info("Material was Edited with the following data : {0} by UserId : {1}", model.ToString(), User.FindFirstValue("userId"));
+
+            }
+            else
+            {
+                _nlogger.Info("Failed to Edit Material with the following data : {0} by UserId : {1}", model.ToString(), User.FindFirstValue("userId"));
+
+            }
+            return RedirectToAction(nameof(Index));
         }
 
 

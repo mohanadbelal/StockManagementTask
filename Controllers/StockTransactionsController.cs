@@ -39,11 +39,18 @@ namespace Assignment.Task.Controllers
         public IActionResult Create(StockTransaction model)
         {
 
-            _stkManagementHelper.InsertStockTranasction(model);
+            if (_stkManagementHelper.InsertStockTranasction(model))
+            {
+                _nlogger.Info("Stock Transction was created with the following data : {0} by UserId : {1}", model.ToString(), User.FindFirstValue("userId"));
 
-			_nlogger.Info("Stock Transction was created with the following data : {0} by UserId : {1}", model.ToString(), User.FindFirstValue("userId"));
+            }
+            else
+            {
+                _nlogger.Info("Faield to create Stock Transction with the following data : {0} by UserId : {1}", model.ToString(), User.FindFirstValue("userId"));
 
-			return RedirectToAction(nameof(Index));
+            }
+
+            return RedirectToAction(nameof(Index));
         }
         public IActionResult Delete(int Id)
         {
