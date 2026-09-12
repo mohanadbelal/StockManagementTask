@@ -1,26 +1,51 @@
-### Building and running your application
+# Docker Deployment Guide - Stock Management System
 
-To build and start your application along with the MS SQL Server database, run:
+This directory contains full Docker containerization support for the Stock Management System application and Microsoft SQL Server 2022.
+
+---
+
+## Container Services Overview
+
+| Service | Image | Description | Ports |
+| :--- | :--- | :--- | :--- |
+| **`server`** | `assignmenttask-server` | ASP.NET Core MVC application | `8080`, `9000` |
+| **`db`** | `mcr.microsoft.com/mssql/server:2022-latest` | Microsoft SQL Server 2022 | `1433` |
+| **`db-init`** | `mcr.microsoft.com/mssql/server:2022-latest` | Ephemeral service running `init-db.sql` | N/A |
+
+---
+
+## Quick Start Commands
+
+### Start All Services
 
 ```bash
-docker compose up --build
+docker compose up --build -d
 ```
 
-### Services included:
-- **`server`**: ASP.NET Core MVC Stock Management web application (runs on http://localhost:8080)
-- **`db`**: Microsoft SQL Server 2022 instance (exposes port 1433)
-- **`db-init`**: Automatic script runner that initializes the database schema, tables (`Material`, `User`, `StockTransaction`), and stored procedures from `init-db.sql`.
-
-### Stopping the application
-
-To stop and remove containers and networks:
+### View Application Logs
 
 ```bash
+# View web server logs
+docker compose logs -f server
+
+# View database logs
+docker compose logs -f db
+```
+
+### Stop All Services
+
+```bash
+# Stop containers (retaining database data)
 docker compose down
-```
 
-To also remove stored database volumes:
-
-```bash
+# Stop containers and wipe database volumes
 docker compose down -v
 ```
+
+---
+
+## Environment & Volume Configuration
+
+- **Environment File (`.env`)**: Secrets such as `MSSQL_SA_PASSWORD`, `TOKEN_KEY`, and `PASSWORD_KEY` are configured in `.env` (copied from `.env.example`).
+- **Application Logs (`./Logs`)**: Container log output at `/app/Logs` is mounted to the host project directory `./Logs`.
+- **Database Volume (`mssql-data`)**: SQL Server data files persist in named volume `mssql-data`.
