@@ -1,4 +1,4 @@
-﻿using Assignment.Task.Data;
+using Assignment.Task.Data;
 using Assignment.Task.Dtos;
 using Assignment.Task.Models;
 using Dapper;
@@ -60,7 +60,7 @@ namespace Assignment.Task.Helpers
 
 			SigningCredentials credentials = new SigningCredentials(
 					tokenKey,
-					SecurityAlgorithms.HmacSha512Signature
+					SecurityAlgorithms.HmacSha256Signature
 				);
 
 			SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor()

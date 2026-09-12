@@ -1,4 +1,4 @@
-﻿using Assignment.Task.Data;
+using Assignment.Task.Data;
 using Assignment.Task.Models;
 using Dapper;
 using System.Data;
@@ -35,9 +35,9 @@ namespace Assignment.Task.Helpers
 				"  ,@Quantity =  @QuantityParam";
 
 			DynamicParameters sqlParams = new DynamicParameters();
-			sqlParams.Add("@MaterialIdParam", stockTransaction.MaterialId, DbType.Int64);
+			sqlParams.Add("@MaterialIdParam", stockTransaction.MaterialId, DbType.Int32);
 			sqlParams.Add("@TransactionTypeParam", stockTransaction.TransactionType == 1? true:false , DbType.Boolean);
-			sqlParams.Add("@QuantityParam", stockTransaction.Quantity, DbType.Decimal);
+			sqlParams.Add("@QuantityParam", stockTransaction.Quantity, DbType.Int32);
 
 
 			_logger.Info("InsertStockTransaction for MaterialId {0} Quantity {1}", stockTransaction.MaterialId, stockTransaction.Quantity);
@@ -53,7 +53,7 @@ namespace Assignment.Task.Helpers
 				    @Id = @TransactionIdParam ";
 
 			DynamicParameters sqlParams = new DynamicParameters();
-			sqlParams.Add("@TransactionIdParam", Id, DbType.Int64);
+			sqlParams.Add("@TransactionIdParam", Id, DbType.Int32);
 			_logger.Info("DeleteStockTransaction {0}", Id);
 			return _dapper.ExecuteQueryWithParameter(sql, sqlParams);
 		}

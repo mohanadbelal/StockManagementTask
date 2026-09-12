@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.Reflection;
 using System.Security.Claims;
+using Dapper;
 
 namespace Assignment.Task.Controllers
 {
@@ -30,9 +31,9 @@ namespace Assignment.Task.Controllers
 
         public IActionResult Login()
         {
-            
+
             Response.Cookies.Delete("JwtToken");
-            
+
             return View();
         }
 
@@ -46,11 +47,11 @@ namespace Assignment.Task.Controllers
 
             _logger.Info("Login attempt for user {0}", username);
 
-            if(_authHelpers.LoginUser(username, PasswordHash , out currUser ))
+            if (_authHelpers.LoginUser(username, PasswordHash, out currUser))
             {
                 string JwtToken = _authHelpers.CreateToken(currUser.Id, currUser.Role);
 
-            
+
                 Response.Cookies.Append("JwtToken", JwtToken, new Microsoft.AspNetCore.Http.CookieOptions()
                 {
                     HttpOnly = true,
@@ -88,24 +89,24 @@ namespace Assignment.Task.Controllers
         {
             if (model.Password != model.passwordConfirm)
             {
-                _logger.Warn("Registration attempt where passwords do not match for username {0} , Password {1} , Password Confirm {2}", model.Username,model.Password,model.passwordConfirm);
+                _logger.Warn("Registration attempt where passwords do not match for username {0} , Password {1} , Password Confirm {2}", model.Username, model.Password, model.passwordConfirm);
                 ModelState.AddModelError(string.Empty, "Passwords do not match.");
                 return View(model);
             }
 
             if (model.Password.Length < 8)
             {
-                ModelState.AddModelError(string.Empty, "Password can't be less 8 characters");
+                ModelState.AddModelError(string.Empty, "Password can't be less than 8 characters");
                 return View(model);
             }
 
-            string sql = "SELECT Username  FROM [StockManagementDb].[dbo].[User] where Username ='"
-                    + model.Username + "'";
-            IEnumerable<string> existingUsers = _dapper.LoadData<string>(sql);
+            string sql = "SELECT Username FROM [StockManagementDb].[dbo].[User] where Username = @UsernameParam";
+            DynamicParameters sqlParams = new DynamicParameters();
+            sqlParams.Add("@UsernameParam", model.Username, System.Data.DbType.String);
+            IEnumerable<string> existingUsers = _dapper.LoadDataWithParams<string>(sql, sqlParams);
 
-            if (existingUsers.Count() == 0)
+            if (!existingUsers.Any())
             {
-
                 var PasswordHash = _authHelpers.GetPasswordHash(model.Password);
 
                 User newUser = new User()
@@ -123,18 +124,16 @@ namespace Assignment.Task.Controllers
                 else
                 {
                     _logger.Error("Failed to create user {0}", model.Username);
-                    ModelState.AddModelError(string.Empty, "Failed to Create");
+                    ModelState.AddModelError(string.Empty, "Failed to Create User");
                     return View(model);
                 }
             }
             else
             {
                 _logger.Warn("Registration attempt with existing username {0}", model.Username);
-                ModelState.AddModelError(string.Empty, "Username already exist, Choose another one");
+                ModelState.AddModelError(string.Empty, "Username already exists, choose another one");
                 return View(model);
             }
-            
-            
         }
     }
 }

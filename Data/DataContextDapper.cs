@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using NLog;
 using System.Data;
@@ -48,7 +48,8 @@ namespace Assignment.Task.Data
 			_logger.Debug("ExecuteQueryWithParameter SQL: {0} Params: {1}", sql, sqlParameters);
 			IDbConnection dbConnection = new SqlConnection(_config.GetConnectionString("DBConnection"));
 
-			return dbConnection.Execute(sql,sqlParameters)>0;
+			int rowsAffected = dbConnection.Execute(sql, sqlParameters);
+			return rowsAffected != 0;
 		}
 
 

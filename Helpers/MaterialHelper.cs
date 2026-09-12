@@ -1,4 +1,4 @@
-﻿using Assignment.Task.Data;
+using Assignment.Task.Data;
 using Assignment.Task.Models;
 using Dapper;
 using Microsoft.AspNetCore.Identity;
@@ -30,7 +30,7 @@ namespace Assignment.Task.Helpers
 		{
 			string sql = "SELECT * FROM dbo.Material WHERE Id = @MaterialIdParam";
 			DynamicParameters sqlParams = new DynamicParameters();
-			sqlParams.Add("@MaterialIdParam", id, DbType.Int64);
+			sqlParams.Add("@MaterialIdParam", id, DbType.Int32);
 
 			_logger.Debug("GetMaterialById called for {0}", id);
 			Material? material = _dapper.LoadDataSingleWithParams<Material>(sql, sqlParams);
@@ -51,9 +51,9 @@ namespace Assignment.Task.Helpers
             DynamicParameters sqlParams = new DynamicParameters();
             sqlParams.Add("@NameParam",material.Name , DbType.String);
             sqlParams.Add("@ColorParam", material.Color, DbType.String);
-            sqlParams.Add("@MinimumRequiredStockParam", material.MinimumRequiredStock, DbType.String);
-            sqlParams.Add("@CurrentStockParam", material.CurrentStock, DbType.String);
-            sqlParams.Add("@MaterialIdParam", material.Id, DbType.Int64);
+            sqlParams.Add("@MinimumRequiredStockParam", material.MinimumRequiredStock, DbType.Int32);
+            sqlParams.Add("@CurrentStockParam", material.CurrentStock, DbType.Int32);
+            sqlParams.Add("@MaterialIdParam", material.Id, DbType.Int32);
 
 			_logger.Info("Upsert material {0}", material.Name);
 			return _dapper.ExecuteQueryWithParameter(sql, sqlParams);
@@ -67,7 +67,7 @@ namespace Assignment.Task.Helpers
 				    @Id = @MaterialIdParam ";
 
             DynamicParameters sqlParams = new DynamicParameters();
-            sqlParams.Add("@MaterialIdParam", Id, DbType.Int64);
+            sqlParams.Add("@MaterialIdParam", Id, DbType.Int32);
 
 			_logger.Info("DeleteMaterial {0}", Id);
 			return _dapper.ExecuteQueryWithParameter(sql, sqlParams);
