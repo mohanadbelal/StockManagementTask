@@ -30,7 +30,7 @@ namespace Assignment.Task.Helpers
 
 		public byte[] GetPasswordHash(string password)
 		{
-			string PasswordKey = _config.GetSection("AppSettings:PasswordKey").Value;
+			string PasswordKey = _config.GetSection("PasswordKey").Value;
 			byte[] passwordHash = KeyDerivation.Pbkdf2(
 				password: password,
 				salt: Encoding.ASCII.GetBytes(PasswordKey),
@@ -50,7 +50,7 @@ namespace Assignment.Task.Helpers
 				new Claim(ClaimTypes.Role, userRole)
 			};
 
-			string? tokenKeyString = _config.GetSection("AppSettings:TokenKey").Value;
+			string? tokenKeyString = _config.GetSection("TokenKey").Value;
 
 			SymmetricSecurityKey tokenKey = new SymmetricSecurityKey(
 					Encoding.UTF8.GetBytes(

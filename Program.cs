@@ -19,7 +19,7 @@ try
     builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
     builder.Services.AddControllersWithViews();
 
-    string? tokenKeyString = builder.Configuration.GetSection("AppSettings:TokenKey").Value;
+    string? tokenKeyString = builder.Configuration.GetSection("TokenKey").Value;
 
     SymmetricSecurityKey tokenKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(
