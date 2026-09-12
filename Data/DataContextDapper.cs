@@ -15,13 +15,13 @@ namespace Assignment.Task.Data
 			_config = config;
 		}
 
-		public IEnumerable<T> LoadData <T>(string sql)
+		public IEnumerable<T> LoadData<T>(string sql)
 		{
 			IDbConnection dbConnection = new SqlConnection(_config.GetConnectionString("DBConnection"));
 
 			return dbConnection.Query<T>(sql);
 
-			 
+
 		}
 
 		public T? LoadDataSingle<T>(string sql)
@@ -40,7 +40,7 @@ namespace Assignment.Task.Data
 
 			return dbConnection.Execute(sql);
 
-			
+
 		}
 
 		public bool ExecuteQueryWithParameter(string sql, DynamicParameters sqlParameters)
@@ -53,13 +53,13 @@ namespace Assignment.Task.Data
 		}
 
 
-		public IEnumerable<T> LoadDataWithParams<T>(string sql , DynamicParameters parameters)
+		public IEnumerable<T> LoadDataWithParams<T>(string sql, DynamicParameters parameters)
 		{
 
 			_logger.Debug("LoadDataWithParams SQL: {0} Params: {1}", sql, parameters);
 			IDbConnection dbConnection = new SqlConnection(_config.GetConnectionString("DBConnection"));
 
-			return dbConnection.Query<T>(sql,parameters);
+			return dbConnection.Query<T>(sql, parameters);
 
 
 		}
@@ -69,7 +69,7 @@ namespace Assignment.Task.Data
 			_logger.Debug("LoadDataSingleWithParams SQL: {0} Params: {1}", sql, parameters);
 			IDbConnection dbConnection = new SqlConnection(_config.GetConnectionString("DBConnection"));
 
-			return dbConnection.QueryFirstOrDefault<T>(sql,parameters);
+			return dbConnection.QueryFirstOrDefault<T>(sql, parameters);
 
 		}
 	}

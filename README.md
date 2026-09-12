@@ -27,7 +27,7 @@ Copy `.env.example` to `.env`:
 cp .env.example .env
 ```
 
-The `.env` file allows customizing database credentials and security keys:
+The `.env` file allows customizing database credentials and application security keys:
 
 ```env
 # Database Configuration
@@ -37,8 +37,8 @@ DB_PORT=1433
 DB_NAME=StockManagementDb
 DB_USER=sa
 
-# Application Security Keys
-TOKEN_KEY=testTokenKey-ThisWillbeReplacedWithTheActualKey
+# Application Security Keys (Passed to app settings / environment variables)
+TOKEN_KEY=testTokenKey-ThisWillbeReplacedWithTheActualKeyTobelongenoughfor512Bit
 PASSWORD_KEY=PasswordKey-ThisWillbeReplacedWithTheActualKey
 ```
 
@@ -57,12 +57,17 @@ docker compose up --build -d
 
 ## Local Development (Without Docker)
 
-1. Update `appsettings.json` with your local SQL Server instance connection string:
+1. Update `appsettings.json` with your local SQL Server instance connection string and security keys:
    ```json
-   "ConnectionStrings": {
-     "DBConnection": "Server=.\\SQLEXPRESS;Database=StockManagementDb;Trusted_Connection=True;TrustServerCertificate=True;"
+   {
+     "ConnectionStrings": {
+       "DBConnection": "Server=.\\SQLEXPRESS;Database=StockManagementDb;Trusted_Connection=True;TrustServerCertificate=True;"
+     },
+     "TokenKey": "YourSecretJwtTokenKeyHere...",
+     "PasswordKey": "YourPasswordSaltKeyHere..."
    }
    ```
+   *Note: Security tokens (`TokenKey` and `PasswordKey`) are read directly from `appsettings.json` (or environment variables).*
 2. Run `init-db.sql` or `SQL Scripts.txt` on your SQL Server instance to create the database tables and stored procedures.
 3. Launch the application:
    ```bash

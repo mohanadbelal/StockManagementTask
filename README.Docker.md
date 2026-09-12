@@ -46,6 +46,6 @@ docker compose down -v
 
 ## Environment & Volume Configuration
 
-- **Environment File (`.env`)**: Secrets such as `MSSQL_SA_PASSWORD`, `TOKEN_KEY`, and `PASSWORD_KEY` are configured in `.env` (copied from `.env.example`).
+- **Environment & App Configuration (`.env` / `appsettings.json`)**: Secrets and keys such as `MSSQL_SA_PASSWORD`, `TOKEN_KEY`, and `PASSWORD_KEY` can be configured via `.env` (copied from `.env.example`). Security tokens (`TokenKey` and `PasswordKey`) are read directly from `appsettings.json` or overridden via environment variables.
 - **Application Logs (`./Logs`)**: Container log output at `/app/Logs` is mounted to the host project directory `./Logs`.
 - **Database Volume (`mssql-data`)**: SQL Server data files persist in named volume `mssql-data`.
